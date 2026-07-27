@@ -269,7 +269,8 @@ body{font-family:'Quicksand','Noto Sans SC',sans-serif;background:linear-gradien
 const tasks = {
   vocab:{name:'背英语单词',target:90,elapsed:0,running:!1,startTime:null,completed:!1},
   exercise:{name:'英语刷题',target:180,elapsed:0,running:!1,startTime:null,completed:!1},
-  python:{name:'Python + AI',target:180,elapsed:0,running:!1,startTime:null,completed:!1}
+  python:{name:'Python + AI',target:180,elapsed:0,running:!1,startTime:null,completed:!1},
+  reading:{name:'每日读书',target:30,elapsed:0,running:!1,startTime:null,completed:!1}
 };
 let waterCount=0;
 let timerInterval=null;
@@ -301,7 +302,8 @@ function buildHome(){
   let h='';
   const cfg=[{id:'vocab',icon:'📖',label:'背英语单词',target:'1.5小时',min:90},
              {id:'exercise',icon:'✏️',label:'英语刷题',target:'3小时',min:180},
-             {id:'python',icon:'💻',label:'Python + AI 学习',target:'3小时',min:180}];
+             {id:'python',icon:'💻',label:'Python + AI 学习',target:'3小时',min:180},
+             {id:'reading',icon:'📚',label:'每日读书',target:'30分钟',min:30}];
   cfg.forEach(c=>{
     h+=`<div class="card" data-task="${c.id}">
       <div class="task-row"><div class="task-label"><span>${c.icon}</span>${c.label}</div><span class="task-target">目标 ${c.target}</span></div>
@@ -367,7 +369,7 @@ function toggleWater(i){waterCount=i<waterCount?i:i+1;renderWaterCups();document
 // ==================== 总进度 ====================
 function updateOverall(){
   let tp=0;Object.keys(tasks).forEach(id=>tp+=Math.min(1,tasks[id].elapsed/tasks[id].target));tp+=Math.min(1,waterCount/10);
-  const pct=Math.round(tp/4*100);document.getElementById('overallFill').style.width=pct+'%';
+  const pct=Math.round(tp/5*100);document.getElementById('overallFill').style.width=pct+'%';
   document.getElementById('overallPct').textContent=pct+'%';
   document.getElementById('overallMsg').textContent=pct===0?'还没有开始呢，加油鸭~ 🌸':pct<25?'开始啦，保持住哦~ 💪':pct<50?'不错不错，继续冲~ ✨':pct<75?'过半啦，你超棒的~ 💜':pct<100?'快完成啦，最后冲刺~ 🔥':'全部搞定！今天也是闪闪发光的一天~ 🎉✨';
 }
