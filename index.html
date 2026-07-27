@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Allen 的工作台 ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #F3E5F5 0%, #FCE4EC 50%, #F8E1F4 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #5E4B6A;
+      overflow-x: hidden;
+    }
+
+    /* Floating decorations */
+    .deco {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.15;
+      animation: float 6s ease-in-out infinite;
+      z-index: 0;
+    }
+    .deco:nth-child(1) { top: 5%; left: 3%; font-size: 40px; animation-delay: 0s; }
+    .deco:nth-child(2) { top: 15%; right: 5%; font-size: 50px; animation-delay: 1s; }
+    .deco:nth-child(3) { bottom: 10%; left: 8%; font-size: 35px; animation-delay: 2s; }
+    .deco:nth-child(4) { bottom: 20%; right: 10%; font-size: 45px; animation-delay: 3s; }
+    .deco:nth-child(5) { top: 50%; left: 2%; font-size: 30px; animation-delay: 1.5s; }
+    .deco:nth-child(6) { top: 40%; right: 3%; font-size: 38px; animation-delay: 2.5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(10deg); }
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .header h1 {
+      font-family: 'Comfortaa', cursive;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #9C7BCD 0%, #E91E63 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .header .date {
+      font-size: 0.95rem;
+      color: #B39DDB;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .header .quote {
+      font-size: 0.9rem;
+      color: #F48FB1;
+      font-style: italic;
+    }
+
+    /* Card base */
+    .card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(179, 157, 219, 0.15);
+      border: 1.5px solid rgba(225, 190, 231, 0.4);
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.6s ease backwards;
+    }
+
+    .card:hover {
+      box-shadow: 0 6px 28px rgba(179, 157, 219, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
+
+    /* Task card */
+    .task-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .task-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #6A4C93;
+    }
+
+    .task-title .icon {
+      font-size: 1.4rem;
+    }
+
+    .task-target {
+      font-size: 0.8rem;
+      color: #CE93D8;
+      background: #F3E5F5;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .task-body {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .progress-bar-wrapper {
+      flex: 1;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #F3E5F5;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #CE93D8 0%, #F48FB1 100%);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+
+    .progress-fill.complete {
+      background: linear-gradient(90deg, #AB47BC 0%, #EC407A 100%);
+    }
+
+    .time-display {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #B39DDB;
+      font-weight: 600;
+    }
+
+    .timer-btn {
+      background: linear-gradient(135deg, #CE93D8 0%, #F48FB1 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 14px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      box-shadow: 0 3px 12px rgba(206, 147, 216, 0.4);
+    }
+
+    .timer-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 16px rgba(206, 147, 216, 0.5);
+    }
+
+    .timer-btn:active {
+      transform: scale(0.95);
+    }
+
+    .timer-btn.running {
+      background: linear-gradient(135deg, #F48FB1 0%, #CE93D8 100%);
+    }
+
+    .task-done-badge {
+      display: none;
+      background: linear-gradient(135deg, #AB47BC 0%, #EC407A 100%);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      animation: popIn 0.4s ease;
+    }
+
+    .task-done-badge.show {
+      display: inline-block;
+    }
+
+    /* Water tracker */
+    .water-cups {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+
+    .water-cup {
+      width: 38px;
+      height: 48px;
+      border-radius: 0 0 12px 12px;
+      border: 2.5px solid #B2EBF2;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .water-cup:hover {
+      transform: translateY(-3px) scale(1.08);
+      border-color: #80DEEA;
+    }
+
+    .water-cup .water {
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(180deg, #80DEEA 0%, #4DD0E1 100%);
+      transition: height 0.4s ease;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .water-cup.filled .water {
+      height: 100%;
+    }
+
+    .water-cup.filled {
+      border-color: #4DD0E1;
+      box-shadow: 0 2px 10px rgba(77, 208, 225, 0.3);
+    }
+
+    .water-cup .cup-emoji {
+      position: absolute;
+      top: -2px;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .water-info {
+      text-align: center;
+      font-size: 1rem;
+      color: #4DD0E1;
+      font-weight: 700;
+    }
+
+    .water-info .count {
+      font-size: 1.4rem;
+      color: #26C6DA;
+    }
+
+    /* Overall progress */
+    .overall-card {
+      text-align: center;
+    }
+
+    .overall-card .label {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #6A4C93;
+      margin-bottom: 12px;
+    }
+
+    .overall-bar {
+      height: 16px;
+      background: #F3E5F5;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .overall-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #CE93D8 0%, #F48FB1 50%, #FFB74D 100%);
+      border-radius: 12px;
+      transition: width 0.6s ease;
+      width: 0%;
+    }
+
+    .overall-percent {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #AB47BC;
+    }
+
+    .overall-message {
+      font-size: 0.85rem;
+      color: #F48FB1;
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    /* Reset button */
+    .reset-btn {
+      display: block;
+      margin: 20px auto 0;
+      background: rgba(255, 255, 255, 0.6);
+      color: #CE93D8;
+      border: 2px solid #E1BEE7;
+      padding: 10px 28px;
+      border-radius: 16px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .reset-btn:hover {
+      background: #F3E5F5;
+      border-color: #CE93D8;
+      color: #AB47BC;
+    }
+
+    /* Completion celebration */
+    .celebrate {
+      animation: celebrate 0.6s ease;
+    }
+
+    @keyframes celebrate {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); }
+      80% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    /* Sparkle effect */
+    .sparkle {
+      position: absolute;
+      pointer-events: none;
+      animation: sparkleAnim 1s ease forwards;
+    }
+
+    @keyframes sparkleAnim {
+      0% { opacity: 1; transform: scale(0) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1) rotate(180deg); }
+      100% { opacity: 0; transform: scale(0) rotate(360deg); }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+      .header h1 { font-size: 1.5rem; }
+      .card { padding: 16px 18px; }
+      .task-title { font-size: 1rem; }
+      .task-title .icon { font-size: 1.2rem; }
+      .water-cup { width: 30px; height: 40px; }
+      .water-cups { gap: 6px; }
+      .task-body { flex-direction: column; align-items: stretch; gap: 10px; }
+      .timer-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating decorations -->
+  <div class="deco">🌸</div>
+  <div class="deco">💜</div>
+  <div class="deco">🌷</div>
+  <div class="deco">✨</div>
+  <div class="deco">🦋</div>
+  <div class="deco">💖</div>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>✨ Allen 的工作台 ✨</h1>
+      <p class="date" id="dateDisplay"></p>
+      <p class="quote" id="quoteDisplay"></p>
+    </div>
+
+    <!-- Task 1: English Vocab -->
+    <div class="card task-card" data-task-id="vocab">
+      <div class="task-header">
+        <div class="task-title">
+          <span class="icon">📖</span>
+          <span>背英语单词</span>
+        </div>
+        <span class="task-target">目标 1.5 小时</span>
+      </div>
+      <div class="task-body">
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar">
+            <div class="progress-fill" id="fill-vocab"></div>
+          </div>
+          <div class="time-display">
+            <span id="time-vocab">0分钟 / 90分钟</span>
+            <span id="pct-vocab">0%</span>
+          </div>
+        </div>
+        <button class="timer-btn" id="btn-vocab" onclick="toggleTimer('vocab')">⏱ 开始</button>
+      </div>
+      <div style="text-align:center; margin-top:10px;">
+        <span class="task-done-badge" id="badge-vocab">🎉 完成啦！</span>
+      </div>
+    </div>
+
+    <!-- Task 2: English Exercises -->
+    <div class="card task-card" data-task-id="exercise">
+      <div class="task-header">
+        <div class="task-title">
+          <span class="icon">✏️</span>
+          <span>英语刷题</span>
+        </div>
+        <span class="task-target">目标 3 小时</span>
+      </div>
+      <div class="task-body">
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar">
+            <div class="progress-fill" id="fill-exercise"></div>
+          </div>
+          <div class="time-display">
+            <span id="time-exercise">0分钟 / 180分钟</span>
+            <span id="pct-exercise">0%</span>
+          </div>
+        </div>
+        <button class="timer-btn" id="btn-exercise" onclick="toggleTimer('exercise')">⏱ 开始</button>
+      </div>
+      <div style="text-align:center; margin-top:10px;">
+        <span class="task-done-badge" id="badge-exercise">🎉 完成啦！</span>
+      </div>
+    </div>
+
+    <!-- Task 3: Python + AI -->
+    <div class="card task-card" data-task-id="python">
+      <div class="task-header">
+        <div class="task-title">
+          <span class="icon">💻</span>
+          <span>Python + AI 学习</span>
+        </div>
+        <span class="task-target">目标 3 小时</span>
+      </div>
+      <div class="task-body">
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar">
+            <div class="progress-fill" id="fill-python"></div>
+          </div>
+          <div class="time-display">
+            <span id="time-python">0分钟 / 180分钟</span>
+            <span id="pct-python">0%</span>
+          </div>
+        </div>
+        <button class="timer-btn" id="btn-python" onclick="toggleTimer('python')">⏱ 开始</button>
+      </div>
+      <div style="text-align:center; margin-top:10px;">
+        <span class="task-done-badge" id="badge-python">🎉 完成啦！</span>
+      </div>
+    </div>
+
+    <!-- Water Tracker -->
+    <div class="card">
+      <div class="task-header">
+        <div class="task-title">
+          <span class="icon">💧</span>
+          <span>今日喝水</span>
+        </div>
+        <span class="task-target">目标 10 杯</span>
+      </div>
+      <div class="water-cups" id="waterCups"></div>
+      <div class="water-info">
+        <span class="count" id="waterCount">0</span> / 10 杯
+      </div>
+    </div>
+
+    <!-- Overall Progress -->
+    <div class="card overall-card">
+      <div class="label">🌟 今日总进度</div>
+      <div class="overall-bar">
+        <div class="overall-fill" id="overallFill"></div>
+      </div>
+      <div class="overall-percent" id="overallPercent">0%</div>
+      <div class="overall-message" id="overallMessage">还没有开始呢，加油鸭~ 🌸</div>
+    </div>
+
+    <!-- Reset -->
+    <button class="reset-btn" onclick="resetDay()">🔄 重置今日</button>
+  </div>
+
+  <script>
+    // Task config
+    const tasks = {
+      vocab:    { name: '背英语单词',    target: 90,  elapsed: 0, running: false, startTime: null, completed: false },
+      exercise: { name: '英语刷题',      target: 180, elapsed: 0, running: false, startTime: null, completed: false },
+      python:   { name: 'Python + AI',  target: 180, elapsed: 0, running: false, startTime: null, completed: false },
+    };
+
+    let waterCount = 0;
+    let timerInterval = null;
+
+    // Motivational quotes
+    const quotes = [
+      '🌸 今天也要加油鸭~ 🌸',
+      '💜 每一步都算数，冲冲冲~ 💜',
+      '✨ 今天的努力，是明天的底气~ ✨',
+      '🌷 慢慢来，比较快~ 🌷',
+      '🦋 你比想象中更厉害哦~ 🦋',
+      '💖 坚持下去，未来会感谢现在的你~ 💖',
+      '🌟 今天的你，已经在发光了~ 🌟',
+    ];
+
+    // Overall messages
+    function getOverallMessage(pct) {
+      if (pct === 0) return '还没有开始呢，加油鸭~ 🌸';
+      if (pct < 25) return '开始啦，保持住哦~ 💪';
+      if (pct < 50) return '不错不错，继续冲~ ✨';
+      if (pct < 75) return '过半啦，你超棒的~ 💜';
+      if (pct < 100) return '快完成啦，最后冲刺~ 🔥';
+      return '全部搞定！今天也是闪闪发光的一天~ 🎉✨';
+    }
+
+    // Date display
+    function updateDate() {
+      const now = new Date();
+      const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+      const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${days[now.getDay()]}`;
+      document.getElementById('dateDisplay').textContent = dateStr;
+    }
+
+    // Random quote
+    function updateQuote() {
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById('quoteDisplay').textContent = quote;
+    }
+
+    // Format minutes to display
+    function formatTime(minutes) {
+      const h = Math.floor(minutes / 60);
+      const m = Math.floor(minutes % 60);
+      if (h > 0) return `${h}小时${m}分钟`;
+      return `${m}分钟`;
+    }
+
+    // Update a single task's UI
+    function updateTaskUI(taskId) {
+      const task = tasks[taskId];
+      const pct = Math.min(100, Math.round((task.elapsed / task.target) * 100));
+
+      document.getElementById(`fill-${taskId}`).style.width = pct + '%';
+      document.getElementById(`time-${taskId}`).textContent = `${formatTime(task.elapsed)} / ${formatTime(task.target)}`;
+      document.getElementById(`pct-${taskId}`).textContent = pct + '%';
+
+      if (pct >= 100 && !task.completed) {
+        task.completed = true;
+        document.getElementById(`fill-${taskId}`).classList.add('complete');
+        document.getElementById(`badge-${taskId}`).classList.add('show');
+        document.querySelector(`[data-task-id="${taskId}"]`).classList.add('celebrate');
+        createSparkles(taskId);
+        // Auto-stop timer
+        if (task.running) {
+          toggleTimer(taskId);
+        }
+      }
+
+      updateOverall();
+      saveState();
+    }
+
+    // Toggle timer
+    function toggleTimer(taskId) {
+      const task = tasks[taskId];
+      const btn = document.getElementById(`btn-${taskId}`);
+
+      if (task.running) {
+        // Pause
+        task.elapsed += (Date.now() - task.startTime) / 60000; // minutes
+        task.running = false;
+        task.startTime = null;
+        btn.textContent = '⏱ 继续';
+        btn.classList.remove('running');
+        updateTaskUI(taskId);
+      } else {
+        // Start
+        task.running = true;
+        task.startTime = Date.now();
+        btn.textContent = '⏸ 暂停';
+        btn.classList.add('running');
+      }
+      saveState();
+    }
+
+    // Timer tick
+    function tick() {
+      Object.keys(tasks).forEach(taskId => {
+        const task = tasks[taskId];
+        if (task.running) {
+          const currentElapsed = task.elapsed + (Date.now() - task.startTime) / 60000;
+          const pct = Math.min(100, Math.round((currentElapsed / task.target) * 100));
+          document.getElementById(`fill-${taskId}`).style.width = pct + '%';
+          document.getElementById(`time-${taskId}`).textContent = `${formatTime(currentElapsed)} / ${formatTime(task.target)}`;
+          document.getElementById(`pct-${taskId}`).textContent = pct + '%';
+
+          if (currentElapsed >= task.target && !task.completed) {
+            task.elapsed = task.target;
+            task.completed = true;
+            task.running = false;
+            task.startTime = null;
+            document.getElementById(`fill-${taskId}`).classList.add('complete');
+            document.getElementById(`badge-${taskId}`).classList.add('show');
+            document.querySelector(`[data-task-id="${taskId}"]`).classList.add('celebrate');
+            createSparkles(taskId);
+            btn = document.getElementById(`btn-${taskId}`);
+            btn.textContent = '✅ 已完成';
+            btn.classList.remove('running');
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            updateOverall();
+            saveState();
+          }
+        }
+      });
+    }
+
+    // Create sparkle effect
+    function createSparkles(taskId) {
+      const card = document.querySelector(`[data-task-id="${taskId}"]`);
+      const emojis = ['✨', '🌟', '💫', '🎉', '💜'];
+      for (let i = 0; i < 6; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        sparkle.style.left = Math.random() * 100 + '%';
+        sparkle.style.top = Math.random() * 100 + '%';
+        sparkle.style.fontSize = (16 + Math.random() * 12) + 'px';
+        sparkle.style.animationDelay = (i * 0.1) + 's';
+        card.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 1200);
+      }
+    }
+
+    // Water tracker
+    function renderWaterCups() {
+      const container = document.getElementById('waterCups');
+      container.innerHTML = '';
+      for (let i = 0; i < 10; i++) {
+        const cup = document.createElement('div');
+        cup.className = 'water-cup' + (i < waterCount ? ' filled' : '');
+        cup.innerHTML = `<span class="cup-emoji">🥛</span><div class="water"></div>`;
+        cup.onclick = () => toggleWater(i);
+        container.appendChild(cup);
+      }
+    }
+
+    function toggleWater(index) {
+      if (index < waterCount) {
+        // Click filled cup - empty from here
+        waterCount = index;
+      } else {
+        // Click empty cup - fill up to here
+        waterCount = index + 1;
+      }
+      renderWaterCups();
+      document.getElementById('waterCount').textContent = waterCount;
+
+      if (waterCount === 10) {
+        const waterCard = document.querySelector('.water-cups').parentElement;
+        waterCard.classList.add('celebrate');
+        setTimeout(() => waterCard.classList.remove('celebrate'), 600);
+      }
+
+      updateOverall();
+      saveState();
+    }
+
+    // Overall progress
+    function updateOverall() {
+      // 4 items: 3 tasks + 1 water
+      let totalProgress = 0;
+
+      Object.keys(tasks).forEach(taskId => {
+        totalProgress += Math.min(1, tasks[taskId].elapsed / tasks[taskId].target);
+      });
+
+      totalProgress += Math.min(1, waterCount / 10);
+
+      const pct = Math.round((totalProgress / 4) * 100);
+      document.getElementById('overallFill').style.width = pct + '%';
+      document.getElementById('overallPercent').textContent = pct + '%';
+      document.getElementById('overallMessage').textContent = getOverallMessage(pct);
+    }
+
+    // Save state
+    function saveState() {
+      const state = {
+        date: new Date().toDateString(),
+        tasks: {},
+        waterCount: waterCount,
+      };
+      Object.keys(tasks).forEach(taskId => {
+        const t = tasks[taskId];
+        state.tasks[taskId] = {
+          elapsed: t.elapsed,
+          running: false, // Don't persist running state
+          completed: t.completed,
+        };
+      });
+      localStorage.setItem('allen-dashboard', JSON.stringify(state));
+    }
+
+    // Load state
+    function loadState() {
+      const saved = localStorage.getItem('allen-dashboard');
+      if (!saved) return;
+
+      try {
+        const state = JSON.parse(saved);
+        // Check if same day
+        if (state.date !== new Date().toDateString()) {
+          // New day, reset
+          localStorage.removeItem('allen-dashboard');
+          return;
+        }
+
+        Object.keys(tasks).forEach(taskId => {
+          if (state.tasks[taskId]) {
+            tasks[taskId].elapsed = state.tasks[taskId].elapsed || 0;
+            tasks[taskId].completed = state.tasks[taskId].completed || false;
+            if (tasks[taskId].completed) {
+              document.getElementById(`fill-${taskId}`).classList.add('complete');
+              document.getElementById(`badge-${taskId}`).classList.add('show');
+              const btn = document.getElementById(`btn-${taskId}`);
+              btn.textContent = '✅ 已完成';
+              btn.disabled = true;
+              btn.style.opacity = '0.6';
+            }
+          }
+        });
+
+        waterCount = state.waterCount || 0;
+        renderWaterCups();
+        document.getElementById('waterCount').textContent = waterCount;
+
+        Object.keys(tasks).forEach(taskId => updateTaskUI(taskId));
+      } catch (e) {
+        console.error('Failed to load state:', e);
+      }
+    }
+
+    // Reset day
+    function resetDay() {
+      if (!confirm('确定要重置今天的进度吗？🌸')) return;
+
+      Object.keys(tasks).forEach(taskId => {
+        tasks[taskId].elapsed = 0;
+        tasks[taskId].running = false;
+        tasks[taskId].startTime = null;
+        tasks[taskId].completed = false;
+        document.getElementById(`fill-${taskId}`).classList.remove('complete');
+        document.getElementById(`fill-${taskId}`).style.width = '0%';
+        document.getElementById(`badge-${taskId}`).classList.remove('show');
+        const btn = document.getElementById(`btn-${taskId}`);
+        btn.textContent = '⏱ 开始';
+        btn.classList.remove('running');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        document.querySelector(`[data-task-id="${taskId}"]`).classList.remove('celebrate');
+        updateTaskUI(taskId);
+      });
+
+      waterCount = 0;
+      renderWaterCups();
+      document.getElementById('waterCount').textContent = waterCount;
+      updateOverall();
+      saveState();
+      updateQuote();
+    }
+
+    // Init
+    updateDate();
+    updateQuote();
+    renderWaterCups();
+    loadState();
+    updateOverall();
+    timerInterval = setInterval(tick, 1000);
+  </script>
+</body>
+</html>
