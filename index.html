@@ -341,10 +341,13 @@ function toggleTimer(id){
   else{t.running=!0;t.startTime=Date.now();btn.textContent='⏸ 暂停';btn.classList.add('running')}
   saveState();
 }
+let tickCounter=0;
 function tick(){
+  let hasRunning=!1;
   Object.keys(tasks).forEach(id=>{
     const t=tasks[id];
     if(!t.running)return;
+    hasRunning=!0;
     const cur=t.elapsed+(Date.now()-t.startTime)/60000,pct=Math.min(100,Math.round(cur/t.target*100));
     document.getElementById('fill-'+id).style.width=pct+'%';
     document.getElementById('time-'+id).textContent=formatTime(cur)+' / '+formatTime(t.target);
@@ -352,8 +355,18 @@ function tick(){
     if(cur>=t.target&&!t.completed){t.elapsed=t.target;t.completed=!0;t.running=!1;t.startTime=null;
       document.getElementById('fill-'+id).classList.add('complete');document.getElementById('badge-'+id).classList.add('show');
       document.querySelector('[data-task="'+id+'"]').classList.add('celebrate');const btn=document.getElementById('btn-'+id);
-      btn.textContent='✅ 已完成';btn.classList.remove('running');btn.disabled=!0;btn.style.opacity='0.6';updateOverall();saveState();}
+      btn.textContent='✅ 已完成';btn.classList.remove('running');btn.disabled=!0;btn.style.opacity='0.6';updateOverall();}
   });
+  // 每3秒（约3次tick）保存一次计时中的进度，防止关闭页面丢失
+  tickCounter++;
+  if(hasRunning&&tickCounter%3===0){
+    Object.keys(tasks).forEach(id=>{
+      const t=tasks[id];
+      if(t.running)tasks[id].elapsed+=(Date.now()-t.startTime)/60000;
+      t.startTime=Date.now();
+    });
+    saveState();
+  }
 }
 
 // ==================== 喝水 ====================
@@ -620,6 +633,22 @@ loadReviews();
 // ==================== 初始化 ====================
 updateDate();updateQuote();renderWaterCups();loadState();updateOverall();
 timerInterval=setInterval(tick,1000);
+
+// 页面隐藏/关闭/切后台时自动保存计时进度
+window.addEventListener('visibilitychange',()=>{
+  if(document.hidden)saveRunningProgress();
+});
+window.addEventListener('beforeunload',()=>{
+  saveRunningProgress();
+});
+function saveRunningProgress(){
+  let changed=!1;
+  Object.keys(tasks).forEach(id=>{
+    const t=tasks[id];
+    if(t.running){t.elapsed+=(Date.now()-t.startTime)/60000;t.startTime=Date.now();changed=!0;}
+  });
+  if(changed)saveState();
+}
 </script>
 </body>
 </html>
