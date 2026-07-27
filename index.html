@@ -1,831 +1,594 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Allen 的工作台 ✨</title>
-  <!-- 标签栏图标 -->
-  <link rel="icon" type="image/svg+xml" href="logo.svg">
-  <!-- 安卓桌面快捷方式必备192x192透明底PNG -->
-  <link rel="icon" type="image/png" sizes="192x192" href="logo-192.png">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#D4B8E8">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allen 的工作台 ✨</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="logo-192.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#D4B8E8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;700&family=Quicksand:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Quicksand','Noto Sans SC',sans-serif;background:linear-gradient(135deg,#F3E5F5 0%,#FCE4EC 50%,#F8E1F4 100%);min-height:100vh;color:#5E4B6A;overflow-x:hidden;display:flex}
 
-    body {
-      font-family: 'Quicksand', sans-serif;
-      background: linear-gradient(135deg, #F3E5F5 0%, #FCE4EC 50%, #F8E1F4 100%);
-      min-height: 100vh;
-      padding: 20px;
-      color: #5E4B6A;
-      overflow-x: hidden;
-    }
+/* ====== 侧边栏 ====== */
+.sidebar{width:230px;min-height:100vh;background:linear-gradient(180deg,#EDE7F6 0%,#FCE4EC 80%,#F8BBD0 100%);border-right:1.5px solid rgba(206,147,216,0.3);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;padding:0;transition:transform 0.3s ease;
+  box-shadow:2px 0 20px rgba(179,157,219,0.15)}
+.sidebar-header{padding:24px 20px 16px;text-align:center;border-bottom:1px solid rgba(206,147,216,0.25)}
+.sidebar-header .logo-icon{font-size:2.4rem;display:block;margin-bottom:4px}
+.sidebar-header .site-name{font-family:'Comfortaa',cursive;font-size:1.15rem;font-weight:700;background:linear-gradient(135deg,#9C7BCD,#EC407A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sidebar-header .site-sub{font-size:0.75rem;color:#B39DDB;margin-top:2px}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 22px;cursor:pointer;transition:all 0.25s ease;font-size:0.9rem;font-weight:600;color:#6A4C93;border-left:3px solid transparent;text-decoration:none;margin:2px 0}
+.nav-item:hover{background:rgba(255,255,255,0.55);border-left-color:#CE93D8;padding-left:26px}
+.nav-item.active{background:rgba(255,255,255,0.7);border-left-color:#AB47BC;color:#AB47BC;font-weight:700}
+.nav-item .nav-icon{font-size:1.2rem;width:24px;text-align:center}
+.nav-divider{margin:8px 20px;border:none;border-top:1px solid rgba(206,147,216,0.25)}
+.nav-label{padding:8px 22px 4px;font-size:0.7rem;font-weight:700;color:#B39DDB;text-transform:uppercase;letter-spacing:2px}
+.sidebar-footer{padding:14px 20px;border-top:1px solid rgba(206,147,216,0.25);text-align:center;font-size:0.7rem;color:#B39DDB}
 
-    /* Floating decorations */
-    .deco {
-      position: fixed;
-      pointer-events: none;
-      opacity: 0.15;
-      animation: float 6s ease-in-out infinite;
-      z-index: 0;
-    }
-    .deco:nth-child(1) { top: 5%; left: 3%; font-size: 40px; animation-delay: 0s; }
-    .deco:nth-child(2) { top: 15%; right: 5%; font-size: 50px; animation-delay: 1s; }
-    .deco:nth-child(3) { bottom: 10%; left: 8%; font-size: 35px; animation-delay: 2s; }
-    .deco:nth-child(4) { bottom: 20%; right: 10%; font-size: 45px; animation-delay: 3s; }
-    .deco:nth-child(5) { top: 50%; left: 2%; font-size: 30px; animation-delay: 1.5s; }
-    .deco:nth-child(6) { top: 40%; right: 3%; font-size: 38px; animation-delay: 2.5s; }
+/* ====== 主内容区 ====== */
+.main{flex:1;margin-left:230px;min-height:100vh;padding:20px 28px 40px;position:relative;z-index:1;max-width:calc(100vw - 230px)}
+.section{display:none;animation:fadeIn 0.35s ease}
+.section.active{display:block}
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(10deg); }
-    }
+/* ====== 手机顶部栏 ====== */
+.mobile-bar{display:none;position:fixed;top:0;left:0;right:0;z-index:99;background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:12px 16px;border-bottom:1px solid rgba(206,147,216,0.25);align-items:center;gap:12px}
+.mobile-bar .menu-btn{font-size:1.4rem;cursor:pointer;padding:6px 8px;border-radius:8px;color:#9C7BCD;background:transparent;border:none}
+.mobile-bar .bar-title{flex:1;font-family:'Comfortaa',cursive;font-weight:700;font-size:1rem;background:linear-gradient(135deg,#9C7BCD,#EC407A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:99;animation:fadeIn 0.2s ease}
 
-    .container {
-      max-width: 680px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
+/* ====== 卡片 ====== */
+.card{background:rgba(255,255,255,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:18px;padding:20px 24px;margin-bottom:16px;box-shadow:0 4px 20px rgba(179,157,219,0.12);border:1.5px solid rgba(225,190,231,0.35);transition:all 0.3s ease}
+.card:hover{box-shadow:0 6px 28px rgba(179,157,219,0.22);transform:translateY(-1px)}
+.card-title{font-size:1.1rem;font-weight:700;color:#6A4C93;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title .icon{font-size:1.3rem}
 
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 28px;
-      animation: fadeInDown 0.8s ease;
-    }
+/* ====== 首页标题 ====== */
+.page-header{text-align:center;margin-bottom:24px}
+.page-header h2{font-family:'Comfortaa',cursive;font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,#9C7BCD,#EC407A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.page-header .date{font-size:0.9rem;color:#B39DDB;font-weight:600}
+.page-header .quote{font-size:0.85rem;color:#F48FB1;font-style:italic;margin-top:4px}
 
-    .header h1 {
-      font-family: 'Comfortaa', cursive;
-      font-size: 2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #9C7BCD 0%, #E91E63 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 8px;
-      letter-spacing: 1px;
-    }
+/* ====== 任务卡片（首页） ====== */
+.task-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.task-label{display:flex;align-items:center;gap:8px;font-weight:700;color:#6A4C93;font-size:1rem}
+.task-target{font-size:0.75rem;color:#CE93D8;background:#F3E5F5;padding:3px 10px;border-radius:10px;font-weight:600}
+.progress-wrap{flex:1}
+.progress-bar{height:10px;background:#F3E5F5;border-radius:8px;overflow:hidden;margin:6px 0 4px}
+.progress-fill{height:100%;border-radius:8px;transition:width 0.4s ease;width:0%}
+.progress-fill.purple{background:linear-gradient(90deg,#CE93D8,#F48FB1)}
+.progress-fill.complete{background:linear-gradient(90deg,#AB47BC,#EC407A)}
+.time-row{display:flex;justify-content:space-between;font-size:0.78rem;color:#B39DDB;font-weight:600}
+.timer-btn{background:linear-gradient(135deg,#CE93D8,#F48FB1);color:#fff;border:none;padding:8px 18px;border-radius:12px;font-family:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.25s ease;white-space:nowrap;box-shadow:0 3px 10px rgba(206,147,216,0.35)}
+.timer-btn:hover{transform:scale(1.04)}
+.timer-btn.running{background:linear-gradient(135deg,#F48FB1,#CE93D8)}
+.task-badge{display:none;background:linear-gradient(135deg,#AB47BC,#EC407A);color:#fff;padding:5px 12px;border-radius:10px;font-size:0.78rem;font-weight:700;animation:popIn 0.4s ease}
+.task-badge.show{display:inline-block}
+.task-body{display:flex;align-items:center;gap:14px;margin-top:4px}
 
-    .header .date {
-      font-size: 0.95rem;
-      color: #B39DDB;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
+/* ====== 水杯 ====== */
+.water-cups{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px 0}
+.water-cup{width:34px;height:44px;border-radius:0 0 10px 10px;border:2.5px solid #B2EBF2;background:transparent;cursor:pointer;transition:all 0.3s ease;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center}
+.water-cup:hover{transform:translateY(-3px) scale(1.06);border-color:#80DEEA}
+.water-cup .water{width:100%;height:0%;background:linear-gradient(180deg,#80DEEA,#4DD0E1);transition:height 0.35s ease;border-radius:0 0 8px 8px}
+.water-cup.filled .water{height:100%}
+.water-cup.filled{border-color:#4DD0E1;box-shadow:0 2px 8px rgba(77,208,225,0.3)}
+.water-cup .emoji{position:absolute;top:0;font-size:0.8rem;pointer-events:none}
+.water-info{text-align:center;font-weight:700;color:#4DD0E1;font-size:0.95rem}
+.water-info b{color:#26C6DA;font-size:1.2rem}
 
-    .header .quote {
-      font-size: 0.9rem;
-      color: #F48FB1;
-      font-style: italic;
-    }
+/* ====== 总进度 ====== */
+.overall-bar{height:14px;background:#F3E5F5;border-radius:10px;overflow:hidden;margin:8px 0}
+.overall-fill{height:100%;background:linear-gradient(90deg,#CE93D8,#F48FB1,#FFB74D);border-radius:10px;transition:width 0.5s ease;width:0%}
+.overall-pct{font-size:1.2rem;font-weight:700;color:#AB47BC;text-align:center}
+.overall-msg{text-align:center;font-size:0.82rem;color:#F48FB1;font-style:italic;margin-top:4px}
+.reset-btn{display:block;margin:16px auto 0;background:rgba(255,255,255,0.6);color:#CE93D8;border:2px solid #E1BEE7;padding:8px 24px;border-radius:14px;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.3s ease}
+.reset-btn:hover{background:#F3E5F5;border-color:#CE93D8;color:#AB47BC}
 
-    /* Card base */
-    .card {
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 20px 24px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 20px rgba(179, 157, 219, 0.15);
-      border: 1.5px solid rgba(225, 190, 231, 0.4);
-      transition: all 0.3s ease;
-      animation: fadeInUp 0.6s ease backwards;
-    }
+/* ====== 新闻卡片 ====== */
+.news-card{border-left:3px solid #CE93D8}
+.news-tag{display:inline-block;font-size:0.7rem;padding:2px 10px;border-radius:8px;font-weight:600;margin:0 4px}
+.news-tag.economy{background:#FFF3E0;color:#E65100}
+.news-tag.policy{background:#E8EAF6;color:#283593}
+.news-tag.tech{background:#E0F2F1;color:#00695C}
+.news-title{font-size:1rem;font-weight:700;color:#4A3B6E;margin:8px 0 4px}
+.news-summary{font-size:0.85rem;color:#7B6B8A;line-height:1.6}
+.news-meta{font-size:0.72rem;color:#B39DDB;margin-top:6px}
+.analysis-box{background:linear-gradient(135deg,#F3E5F5,#FCE4EC);border-radius:12px;padding:12px 16px;margin-top:10px;font-size:0.84rem;line-height:1.7;color:#6A4C93}
+.analysis-box strong{color:#AB47BC}
 
-    .card:hover {
-      box-shadow: 0 6px 28px rgba(179, 157, 219, 0.25);
-      transform: translateY(-2px);
-    }
+/* ====== 英语学习 ====== */
+.sentence-card{background:linear-gradient(135deg,rgba(237,231,246,0.6),rgba(252,228,236,0.6));border-radius:14px;padding:16px 20px;margin:12px 0;border:1px solid rgba(206,147,216,0.25)}
+.eng-sentence{font-size:0.95rem;color:#4A3B6E;line-height:1.8;font-weight:500;margin-bottom:10px}
+.eng-label{display:inline-block;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:6px;margin-right:6px;margin-bottom:6px}
+.eng-label.grammar{background:#E1BEE7;color:#6A1B9A}
+.eng-label.vocab{background:#FFCCBC;color:#BF360C}
+.eng-label.trans{background:#C8E6C9;color:#1B5E20}
+.eng-detail{font-size:0.82rem;color:#7B6B8A;line-height:1.7;margin-top:6px}
 
-    .card:nth-child(1) { animation-delay: 0.1s; }
-    .card:nth-child(2) { animation-delay: 0.2s; }
-    .card:nth-child(3) { animation-delay: 0.3s; }
-    .card:nth-child(4) { animation-delay: 0.4s; }
-    .card:nth-child(5) { animation-delay: 0.5s; }
+/* ====== 视频占位 ====== */
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:12px 0}
+.video-card{background:rgba(255,255,255,0.65);border-radius:14px;padding:14px;border:1px solid rgba(225,190,231,0.35);transition:all 0.3s ease}
+.video-card:hover{box-shadow:0 4px 16px rgba(179,157,219,0.2);transform:translateY(-2px)}
+.video-thumb{height:110px;background:linear-gradient(135deg,#E1BEE7,#F8BBD0);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin-bottom:8px}
+.video-title{font-size:0.85rem;font-weight:700;color:#4A3B6E;line-height:1.4}
+.video-sub{font-size:0.72rem;color:#B39DDB;margin-top:4px}
 
-    /* Task card */
-    .task-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
+/* ====== 复盘表单 ====== */
+.review-input{width:100%;background:rgba(255,255,255,0.8);border:1.5px solid #E1BEE7;border-radius:12px;padding:12px 14px;font-family:inherit;font-size:0.88rem;color:#5E4B6A;resize:vertical;min-height:60px;margin-bottom:10px;transition:border-color 0.3s}
+.review-input:focus{outline:none;border-color:#AB47BC}
+.review-btn{background:linear-gradient(135deg,#CE93D8,#F48FB1);color:#fff;border:none;padding:10px 28px;border-radius:12px;font-family:inherit;font-size:0.9rem;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(206,147,216,0.35);transition:all 0.25s ease}
+.review-btn:hover{transform:scale(1.04)}
+.review-history{margin-top:16px}
+.review-item{background:rgba(255,255,255,0.65);border-radius:12px;padding:14px 16px;margin-bottom:10px;border:1px solid rgba(225,190,231,0.3);font-size:0.84rem;line-height:1.7}
+.review-item .date{font-size:0.72rem;color:#B39DDB;font-weight:600}
+.review-item .mood{font-size:1.2rem}
 
-    .task-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #6A4C93;
-    }
+/* ====== 提醒横幅 ====== */
+.tip-banner{background:linear-gradient(135deg,#FFF3E0,#FCE4EC);border-radius:12px;padding:12px 16px;margin:8px 0 16px;font-size:0.8rem;color:#8D6E63;line-height:1.6;border:1px solid rgba(255,183,77,0.3)}
+.tip-banner .tip-icon{font-size:1.1rem}
 
-    .task-title .icon {
-      font-size: 1.4rem;
-    }
+/* ====== 动画 ====== */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{transform:scale(0)}80%{transform:scale(1.15)}100%{transform:scale(1)}}
+.celebrate{animation:popIn 0.5s ease}
 
-    .task-target {
-      font-size: 0.8rem;
-      color: #CE93D8;
-      background: #F3E5F5;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-weight: 600;
-    }
+/* ====== 装饰 ====== */
+.deco{position:fixed;pointer-events:none;opacity:0.12;z-index:0}
+.deco:nth-child(1){top:4%;left:240px;font-size:36px}
+.deco:nth-child(2){top:12%;right:5%;font-size:44px}
+.deco:nth-child(3){bottom:8%;right:10%;font-size:38px}
+.deco:nth-child(4){bottom:20%;left:250px;font-size:30px}
 
-    .task-body {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .progress-bar-wrapper {
-      flex: 1;
-    }
-
-    .progress-bar {
-      height: 12px;
-      background: #F3E5F5;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 6px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #CE93D8 0%, #F48FB1 100%);
-      border-radius: 10px;
-      transition: width 0.5s ease;
-      width: 0%;
-    }
-
-    .progress-fill.complete {
-      background: linear-gradient(90deg, #AB47BC 0%, #EC407A 100%);
-    }
-
-    .time-display {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      color: #B39DDB;
-      font-weight: 600;
-    }
-
-    .timer-btn {
-      background: linear-gradient(135deg, #CE93D8 0%, #F48FB1 100%);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 14px;
-      font-family: 'Quicksand', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-      box-shadow: 0 3px 12px rgba(206, 147, 216, 0.4);
-    }
-
-    .timer-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 16px rgba(206, 147, 216, 0.5);
-    }
-
-    .timer-btn:active {
-      transform: scale(0.95);
-    }
-
-    .timer-btn.running {
-      background: linear-gradient(135deg, #F48FB1 0%, #CE93D8 100%);
-    }
-
-    .task-done-badge {
-      display: none;
-      background: linear-gradient(135deg, #AB47BC 0%, #EC407A 100%);
-      color: white;
-      padding: 6px 14px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      animation: popIn 0.4s ease;
-    }
-
-    .task-done-badge.show {
-      display: inline-block;
-    }
-
-    /* Water tracker */
-    .water-cups {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 16px 0;
-    }
-
-    .water-cup {
-      width: 38px;
-      height: 48px;
-      border-radius: 0 0 12px 12px;
-      border: 2.5px solid #B2EBF2;
-      background: transparent;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-    }
-
-    .water-cup:hover {
-      transform: translateY(-3px) scale(1.08);
-      border-color: #80DEEA;
-    }
-
-    .water-cup .water {
-      width: 100%;
-      height: 0%;
-      background: linear-gradient(180deg, #80DEEA 0%, #4DD0E1 100%);
-      transition: height 0.4s ease;
-      border-radius: 0 0 10px 10px;
-    }
-
-    .water-cup.filled .water {
-      height: 100%;
-    }
-
-    .water-cup.filled {
-      border-color: #4DD0E1;
-      box-shadow: 0 2px 10px rgba(77, 208, 225, 0.3);
-    }
-
-    .water-cup .cup-emoji {
-      position: absolute;
-      top: -2px;
-      font-size: 1rem;
-      pointer-events: none;
-    }
-
-    .water-info {
-      text-align: center;
-      font-size: 1rem;
-      color: #4DD0E1;
-      font-weight: 700;
-    }
-
-    .water-info .count {
-      font-size: 1.4rem;
-      color: #26C6DA;
-    }
-
-    /* Overall progress */
-    .overall-card {
-      text-align: center;
-    }
-
-    .overall-card .label {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #6A4C93;
-      margin-bottom: 12px;
-    }
-
-    .overall-bar {
-      height: 16px;
-      background: #F3E5F5;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .overall-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #CE93D8 0%, #F48FB1 50%, #FFB74D 100%);
-      border-radius: 12px;
-      transition: width 0.6s ease;
-      width: 0%;
-    }
-
-    .overall-percent {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #AB47BC;
-    }
-
-    .overall-message {
-      font-size: 0.85rem;
-      color: #F48FB1;
-      margin-top: 6px;
-      font-style: italic;
-    }
-
-    /* Reset button */
-    .reset-btn {
-      display: block;
-      margin: 20px auto 0;
-      background: rgba(255, 255, 255, 0.6);
-      color: #CE93D8;
-      border: 2px solid #E1BEE7;
-      padding: 10px 28px;
-      border-radius: 16px;
-      font-family: 'Quicksand', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .reset-btn:hover {
-      background: #F3E5F5;
-      border-color: #CE93D8;
-      color: #AB47BC;
-    }
-
-    /* Completion celebration */
-    .celebrate {
-      animation: celebrate 0.6s ease;
-    }
-
-    @keyframes celebrate {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    /* Animations */
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes popIn {
-      0% { transform: scale(0); }
-      80% { transform: scale(1.15); }
-      100% { transform: scale(1); }
-    }
-
-    /* Sparkle effect */
-    .sparkle {
-      position: absolute;
-      pointer-events: none;
-      animation: sparkleAnim 1s ease forwards;
-    }
-
-    @keyframes sparkleAnim {
-      0% { opacity: 1; transform: scale(0) rotate(0deg); }
-      50% { opacity: 1; transform: scale(1) rotate(180deg); }
-      100% { opacity: 0; transform: scale(0) rotate(360deg); }
-    }
-
-    /* Mobile */
-    @media (max-width: 480px) {
-      body { padding: 12px; }
-      .header h1 { font-size: 1.5rem; }
-      .card { padding: 16px 18px; }
-      .task-title { font-size: 1rem; }
-      .task-title .icon { font-size: 1.2rem; }
-      .water-cup { width: 30px; height: 40px; }
-      .water-cups { gap: 6px; }
-      .task-body { flex-direction: column; align-items: stretch; gap: 10px; }
-      .timer-btn { width: 100%; }
-    }
-  </style>
+/* ====== 移动端 ====== */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .mobile-bar{display:flex}
+  .overlay.open{display:block}
+  .main{margin-left:0;max-width:100vw;padding:56px 14px 30px}
+  .deco{display:none}
+  .video-grid{grid-template-columns:1fr}
+  .task-body{flex-direction:column;align-items:stretch;gap:10px}
+  .timer-btn{width:100%}
+  .page-header h2{font-size:1.3rem}
+}
+</style>
 </head>
 <body>
-  <!-- Floating decorations -->
-  <div class="deco">🌸</div>
-  <div class="deco">💜</div>
-  <div class="deco">🌷</div>
-  <div class="deco">✨</div>
-  <div class="deco">🦋</div>
-  <div class="deco">💖</div>
 
-  <div class="container">
-    <!-- Header -->
-    <div class="header">
-      <h1>✨ Allen 的工作台 ✨</h1>
-      <p class="date" id="dateDisplay"></p>
-      <p class="quote" id="quoteDisplay"></p>
-    </div>
+<!-- 装饰 -->
+<div class="deco">🌸</div><div class="deco">🦋</div><div class="deco">💜</div><div class="deco">✨</div>
 
-    <!-- Task 1: English Vocab -->
-    <div class="card task-card" data-task-id="vocab">
-      <div class="task-header">
-        <div class="task-title">
-          <span class="icon">📖</span>
-          <span>背英语单词</span>
-        </div>
-        <span class="task-target">目标 1.5 小时</span>
-      </div>
-      <div class="task-body">
-        <div class="progress-bar-wrapper">
-          <div class="progress-bar">
-            <div class="progress-fill" id="fill-vocab"></div>
-          </div>
-          <div class="time-display">
-            <span id="time-vocab">0分钟 / 90分钟</span>
-            <span id="pct-vocab">0%</span>
-          </div>
-        </div>
-        <button class="timer-btn" id="btn-vocab" onclick="toggleTimer('vocab')">⏱ 开始</button>
-      </div>
-      <div style="text-align:center; margin-top:10px;">
-        <span class="task-done-badge" id="badge-vocab">🎉 完成啦！</span>
-      </div>
-    </div>
+<!-- 遮罩 -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Task 2: English Exercises -->
-    <div class="card task-card" data-task-id="exercise">
-      <div class="task-header">
-        <div class="task-title">
-          <span class="icon">✏️</span>
-          <span>英语刷题</span>
-        </div>
-        <span class="task-target">目标 3 小时</span>
-      </div>
-      <div class="task-body">
-        <div class="progress-bar-wrapper">
-          <div class="progress-bar">
-            <div class="progress-fill" id="fill-exercise"></div>
-          </div>
-          <div class="time-display">
-            <span id="time-exercise">0分钟 / 180分钟</span>
-            <span id="pct-exercise">0%</span>
-          </div>
-        </div>
-        <button class="timer-btn" id="btn-exercise" onclick="toggleTimer('exercise')">⏱ 开始</button>
-      </div>
-      <div style="text-align:center; margin-top:10px;">
-        <span class="task-done-badge" id="badge-exercise">🎉 完成啦！</span>
-      </div>
-    </div>
+<!-- 手机顶部栏 -->
+<div class="mobile-bar">
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  <span class="bar-title" id="barTitle">✨ Allen 的工作台</span>
+</div>
 
-    <!-- Task 3: Python + AI -->
-    <div class="card task-card" data-task-id="python">
-      <div class="task-header">
-        <div class="task-title">
-          <span class="icon">💻</span>
-          <span>Python + AI 学习</span>
-        </div>
-        <span class="task-target">目标 3 小时</span>
-      </div>
-      <div class="task-body">
-        <div class="progress-bar-wrapper">
-          <div class="progress-bar">
-            <div class="progress-fill" id="fill-python"></div>
-          </div>
-          <div class="time-display">
-            <span id="time-python">0分钟 / 180分钟</span>
-            <span id="pct-python">0%</span>
-          </div>
-        </div>
-        <button class="timer-btn" id="btn-python" onclick="toggleTimer('python')">⏱ 开始</button>
-      </div>
-      <div style="text-align:center; margin-top:10px;">
-        <span class="task-done-badge" id="badge-python">🎉 完成啦！</span>
-      </div>
-    </div>
-
-    <!-- Water Tracker -->
-    <div class="card">
-      <div class="task-header">
-        <div class="task-title">
-          <span class="icon">💧</span>
-          <span>今日喝水</span>
-        </div>
-        <span class="task-target">目标 10 杯</span>
-      </div>
-      <div class="water-cups" id="waterCups"></div>
-      <div class="water-info">
-        <span class="count" id="waterCount">0</span> / 10 杯
-      </div>
-    </div>
-
-    <!-- Overall Progress -->
-    <div class="card overall-card">
-      <div class="label">🌟 今日总进度</div>
-      <div class="overall-bar">
-        <div class="overall-fill" id="overallFill"></div>
-      </div>
-      <div class="overall-percent" id="overallPercent">0%</div>
-      <div class="overall-message" id="overallMessage">还没有开始呢，加油鸭~ 🌸</div>
-    </div>
-
-    <!-- Reset -->
-    <button class="reset-btn" onclick="resetDay()">🔄 重置今日</button>
+<!-- 侧边栏 -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <span class="logo-icon">🐾</span>
+    <div class="site-name">Allen 的工作台</div>
+    <div class="site-sub">每天进步一点点 ✨</div>
   </div>
+  <nav class="sidebar-nav" onclick="handleNavClick(event)">
+    <a class="nav-item active" data-section="home"><span class="nav-icon">🏠</span> 首页看板</a>
+    <div class="nav-divider"></div>
+    <div class="nav-label">📚 学习模块</div>
+    <a class="nav-item" data-section="news"><span class="nav-icon">📰</span> 每日新闻</a>
+    <a class="nav-item" data-section="english"><span class="nav-icon">🇬🇧</span> 英语学习</a>
+    <a class="nav-item" data-section="ai"><span class="nav-icon">🤖</span> AI 学习</a>
+    <a class="nav-item" data-section="books"><span class="nav-icon">📚</span> 读书小屋</a>
+    <div class="nav-divider"></div>
+    <div class="nav-label">📝 日常</div>
+    <a class="nav-item" data-section="review"><span class="nav-icon">🌙</span> 复盘总结</a>
+  </nav>
+  <div class="sidebar-footer">Made with 💜 by 小爪</div>
+</aside>
 
-  <script>
-    // Task config
-    const tasks = {
-      vocab:    { name: '背英语单词',    target: 90,  elapsed: 0, running: false, startTime: null, completed: false },
-      exercise: { name: '英语刷题',      target: 180, elapsed: 0, running: false, startTime: null, completed: false },
-      python:   { name: 'Python + AI',  target: 180, elapsed: 0, running: false, startTime: null, completed: false },
-    };
+<!-- 主内容 -->
+<main class="main" id="mainContent">
 
-    let waterCount = 0;
-    let timerInterval = null;
+<!-- ========== 首页看板 ========== -->
+<section class="section active" id="sec-home">
+<div class="page-header">
+  <h2>✨ Allen 的工作台 ✨</h2>
+  <div class="date" id="dateDisplay"></div>
+  <div class="quote" id="quoteDisplay"></div>
+</div>
+<div id="homeContent"></div>
+<div class="card" style="text-align:center">
+  <div class="overall-bar"><div class="overall-fill" id="overallFill"></div></div>
+  <div class="overall-pct" id="overallPct">0%</div>
+  <div class="overall-msg" id="overallMsg">还没有开始呢，加油鸭~ 🌸</div>
+</div>
+<button class="reset-btn" onclick="resetDay()">🔄 重置今日</button>
+</section>
 
-    // Motivational quotes
-    const quotes = [
-      '🌸 今天也要加油鸭~ 🌸',
-      '💜 每一步都算数，冲冲冲~ 💜',
-      '✨ 今天的努力，是明天的底气~ ✨',
-      '🌷 慢慢来，比较快~ 🌷',
-      '🦋 你比想象中更厉害哦~ 🦋',
-      '💖 坚持下去，未来会感谢现在的你~ 💖',
-      '🌟 今天的你，已经在发光了~ 🌟',
-    ];
+<!-- ========== 每日新闻 ========== -->
+<section class="section" id="sec-news">
+<div class="page-header"><h2>📰 每日新闻</h2><div class="date" id="newsDate"></div><div class="quote">经济优先 · 深度解读 · 每日更新</div></div>
+<div class="tip-banner"><span class="tip-icon">💡</span> 小提示：这里的新闻由小爪每天帮你搜集整理，经济类资讯优先。内容每天手动更新。</div>
+<div id="newsContent"></div>
+</section>
 
-    // Overall messages
-    function getOverallMessage(pct) {
-      if (pct === 0) return '还没有开始呢，加油鸭~ 🌸';
-      if (pct < 25) return '开始啦，保持住哦~ 💪';
-      if (pct < 50) return '不错不错，继续冲~ ✨';
-      if (pct < 75) return '过半啦，你超棒的~ 💜';
-      if (pct < 100) return '快完成啦，最后冲刺~ 🔥';
-      return '全部搞定！今天也是闪闪发光的一天~ 🎉✨';
-    }
+<!-- ========== 英语学习 ========== -->
+<section class="section" id="sec-english">
+<div class="page-header"><h2>🇬🇧 英语学习</h2><div class="quote">六级 + 考研 · 长难句精析 · 每日一练</div></div>
+<div class="tip-banner"><span class="tip-icon">💡</span> 每天一个长难句，附带语法拆解和词汇注释。视频区展示学习资源，小爪定期更新。</div>
+<div id="englishContent"></div>
+</section>
 
-    // Date display
-    function updateDate() {
-      const now = new Date();
-      const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-      const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${days[now.getDay()]}`;
-      document.getElementById('dateDisplay').textContent = dateStr;
-    }
+<!-- ========== AI 学习 ========== -->
+<section class="section" id="sec-ai">
+<div class="page-header"><h2>🤖 AI 学习</h2><div class="quote">Python 基础 → 机器学习 → 深度学习</div></div>
+<div class="tip-banner"><span class="tip-icon">💡</span> 跟着路线走，从入门到实战。视频资源由小爪帮你筛选更新。</div>
+<div id="aiContent"></div>
+</section>
 
-    // Random quote
-    function updateQuote() {
-      const quote = quotes[Math.floor(Math.random() * quotes.length)];
-      document.getElementById('quoteDisplay').textContent = quote;
-    }
+<!-- ========== 读书小屋 ========== -->
+<section class="section" id="sec-books">
+<div class="page-header"><h2>📚 读书小屋</h2><div class="quote">经济 · 易经 · 孙子兵法 · 天才在左疯子在右</div></div>
+<div class="tip-banner"><span class="tip-icon">💡</span> 每本书附导读 + 解读视频 + 文字总结，小爪帮你整理。</div>
+<div id="booksContent"></div>
+</section>
 
-    // Format minutes to display
-    function formatTime(minutes) {
-      const h = Math.floor(minutes / 60);
-      const m = Math.floor(minutes % 60);
-      if (h > 0) return `${h}小时${m}分钟`;
-      return `${m}分钟`;
-    }
+<!-- ========== 复盘总结 ========== -->
+<section class="section" id="sec-review">
+<div class="page-header"><h2>🌙 每日复盘</h2><div class="quote">今天做得怎么样？写下来，明天更清晰</div></div>
+<div class="card">
+  <div class="card-title"><span class="icon">📝</span> 今天的复盘</div>
+  <textarea class="review-input" id="reviewDone" placeholder="✅ 今天完成了什么？"></textarea>
+  <textarea class="review-input" id="reviewBlock" placeholder="🚧 遇到了什么问题？"></textarea>
+  <textarea class="review-input" id="reviewPlan" placeholder="📅 明天的计划？"></textarea>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+    <span style="font-weight:700;color:#6A4C93">今日心情：</span>
+    <select id="reviewMood" style="font-size:1.5rem;border:none;background:transparent;cursor:pointer">
+      <option value="😄">😄 超棒</option><option value="🙂">🙂 不错</option><option value="😐">😐 一般</option><option value="😞">😞 不太好</option><option value="😤">😤 烦躁</option>
+    </select>
+  </div>
+  <button class="review-btn" onclick="saveReview()">💾 保存复盘</button>
+</div>
+<div class="review-history"><div class="card-title"><span class="icon">📋</span> 历史复盘</div><div id="reviewList"><p style="color:#B39DDB;font-size:0.85rem">还没有写过复盘呢，今天来写第一篇吧~</p></div></div>
+</section>
 
-    // Update a single task's UI
-    function updateTaskUI(taskId) {
-      const task = tasks[taskId];
-      const pct = Math.min(100, Math.round((task.elapsed / task.target) * 100));
+</main>
 
-      document.getElementById(`fill-${taskId}`).style.width = pct + '%';
-      document.getElementById(`time-${taskId}`).textContent = `${formatTime(task.elapsed)} / ${formatTime(task.target)}`;
-      document.getElementById(`pct-${taskId}`).textContent = pct + '%';
+<script>
+// ==================== 全局变量 ====================
+const tasks = {
+  vocab:{name:'背英语单词',target:90,elapsed:0,running:!1,startTime:null,completed:!1},
+  exercise:{name:'英语刷题',target:180,elapsed:0,running:!1,startTime:null,completed:!1},
+  python:{name:'Python + AI',target:180,elapsed:0,running:!1,startTime:null,completed:!1}
+};
+let waterCount=0;
+let timerInterval=null;
+const quotes=['🌸 今天也要加油鸭~','💜 每一步都算数，冲冲冲~','✨ 今天的努力，是明天的底气~','🌷 慢慢来，比较快~','🦋 你比想象中更厉害哦~','💖 坚持下去，未来会感谢现在的你~','🌟 今天的你，已经在发光了~'];
 
-      if (pct >= 100 && !task.completed) {
-        task.completed = true;
-        document.getElementById(`fill-${taskId}`).classList.add('complete');
-        document.getElementById(`badge-${taskId}`).classList.add('show');
-        document.querySelector(`[data-task-id="${taskId}"]`).classList.add('celebrate');
-        createSparkles(taskId);
-        // Auto-stop timer
-        if (task.running) {
-          toggleTimer(taskId);
-        }
-      }
+// ==================== 侧边栏 ====================
+function handleNavClick(e){
+  const item=e.target.closest('.nav-item');
+  if(!item)return;
+  showSection(item.dataset.section);
+  if(window.innerWidth<768)toggleSidebar();
+}
+function showSection(name){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const sec=document.getElementById('sec-'+name);
+  if(sec)sec.classList.add('active');
+  const nav=document.querySelector(`[data-section="${name}"]`);
+  if(nav)nav.classList.add('active');
+  document.getElementById('barTitle').textContent=nav?nav.textContent.trim():'✨ Allen 的工作台';
+}
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
 
-      updateOverall();
-      saveState();
-    }
+// ==================== 首页渲染 ====================
+function buildHome(){
+  let h='';
+  const cfg=[{id:'vocab',icon:'📖',label:'背英语单词',target:'1.5小时',min:90},
+             {id:'exercise',icon:'✏️',label:'英语刷题',target:'3小时',min:180},
+             {id:'python',icon:'💻',label:'Python + AI 学习',target:'3小时',min:180}];
+  cfg.forEach(c=>{
+    h+=`<div class="card" data-task="${c.id}">
+      <div class="task-row"><div class="task-label"><span>${c.icon}</span>${c.label}</div><span class="task-target">目标 ${c.target}</span></div>
+      <div class="task-body">
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill purple" id="fill-${c.id}"></div></div>
+        <div class="time-row"><span id="time-${c.id}">0分钟 / ${c.min}分钟</span><span id="pct-${c.id}">0%</span></div></div>
+        <button class="timer-btn" id="btn-${c.id}" onclick="toggleTimer('${c.id}')">⏱ 开始</button>
+      </div>
+      <div style="text-align:center;margin-top:8px"><span class="task-badge" id="badge-${c.id}">🎉 完成啦！</span></div>
+    </div>`;
+  });
+  h+=`<div class="card"><div class="task-row"><div class="task-label"><span>💧</span> 今日喝水</div><span class="task-target">目标 10 杯</span></div>
+    <div class="water-cups" id="waterCups"></div>
+    <div class="water-info"><b id="waterCount">0</b> / 10 杯</div></div>`;
+  document.getElementById('homeContent').innerHTML=h;
+}
+buildHome();
 
-    // Toggle timer
-    function toggleTimer(taskId) {
-      const task = tasks[taskId];
-      const btn = document.getElementById(`btn-${taskId}`);
+// ==================== 计时逻辑 ====================
+function formatTime(m){const h=Math.floor(m/60),mm=Math.floor(m%60);return h>0?h+'小时'+mm+'分钟':mm+'分钟'}
+function updateTaskUI(id){
+  const t=tasks[id],pct=Math.min(100,Math.round(t.elapsed/t.target*100));
+  document.getElementById('fill-'+id).style.width=pct+'%';
+  document.getElementById('time-'+id).textContent=formatTime(t.elapsed)+' / '+formatTime(t.target);
+  document.getElementById('pct-'+id).textContent=pct+'%';
+  if(pct>=100&&!t.completed){t.completed=!0;document.getElementById('fill-'+id).classList.add('complete');
+    document.getElementById('badge-'+id).classList.add('show');
+    document.querySelector('[data-task="'+id+'"]').classList.add('celebrate');
+    if(t.running)toggleTimer(id);}
+  updateOverall();saveState();
+}
+function toggleTimer(id){
+  const t=tasks[id],btn=document.getElementById('btn-'+id);
+  if(t.running){t.elapsed+=(Date.now()-t.startTime)/60000;t.running=!1;t.startTime=null;btn.textContent='⏱ 继续';btn.classList.remove('running');updateTaskUI(id)}
+  else{t.running=!0;t.startTime=Date.now();btn.textContent='⏸ 暂停';btn.classList.add('running')}
+  saveState();
+}
+function tick(){
+  Object.keys(tasks).forEach(id=>{
+    const t=tasks[id];
+    if(!t.running)return;
+    const cur=t.elapsed+(Date.now()-t.startTime)/60000,pct=Math.min(100,Math.round(cur/t.target*100));
+    document.getElementById('fill-'+id).style.width=pct+'%';
+    document.getElementById('time-'+id).textContent=formatTime(cur)+' / '+formatTime(t.target);
+    document.getElementById('pct-'+id).textContent=pct+'%';
+    if(cur>=t.target&&!t.completed){t.elapsed=t.target;t.completed=!0;t.running=!1;t.startTime=null;
+      document.getElementById('fill-'+id).classList.add('complete');document.getElementById('badge-'+id).classList.add('show');
+      document.querySelector('[data-task="'+id+'"]').classList.add('celebrate');const btn=document.getElementById('btn-'+id);
+      btn.textContent='✅ 已完成';btn.classList.remove('running');btn.disabled=!0;btn.style.opacity='0.6';updateOverall();saveState();}
+  });
+}
 
-      if (task.running) {
-        // Pause
-        task.elapsed += (Date.now() - task.startTime) / 60000; // minutes
-        task.running = false;
-        task.startTime = null;
-        btn.textContent = '⏱ 继续';
-        btn.classList.remove('running');
-        updateTaskUI(taskId);
-      } else {
-        // Start
-        task.running = true;
-        task.startTime = Date.now();
-        btn.textContent = '⏸ 暂停';
-        btn.classList.add('running');
-      }
-      saveState();
-    }
+// ==================== 喝水 ====================
+function renderWaterCups(){
+  const c=document.getElementById('waterCups');if(!c)return;c.innerHTML='';
+  for(let i=0;i<10;i++){
+    const cup=document.createElement('div');cup.className='water-cup'+(i<waterCount?' filled':'');
+    cup.innerHTML='<span class="emoji">🥛</span><div class="water"></div>';cup.onclick=()=>toggleWater(i);c.appendChild(cup);
+  }
+}
+function toggleWater(i){waterCount=i<waterCount?i:i+1;renderWaterCups();document.getElementById('waterCount').textContent=waterCount;updateOverall();saveState();}
 
-    // Timer tick
-    function tick() {
-      Object.keys(tasks).forEach(taskId => {
-        const task = tasks[taskId];
-        if (task.running) {
-          const currentElapsed = task.elapsed + (Date.now() - task.startTime) / 60000;
-          const pct = Math.min(100, Math.round((currentElapsed / task.target) * 100));
-          document.getElementById(`fill-${taskId}`).style.width = pct + '%';
-          document.getElementById(`time-${taskId}`).textContent = `${formatTime(currentElapsed)} / ${formatTime(task.target)}`;
-          document.getElementById(`pct-${taskId}`).textContent = pct + '%';
+// ==================== 总进度 ====================
+function updateOverall(){
+  let tp=0;Object.keys(tasks).forEach(id=>tp+=Math.min(1,tasks[id].elapsed/tasks[id].target));tp+=Math.min(1,waterCount/10);
+  const pct=Math.round(tp/4*100);document.getElementById('overallFill').style.width=pct+'%';
+  document.getElementById('overallPct').textContent=pct+'%';
+  document.getElementById('overallMsg').textContent=pct===0?'还没有开始呢，加油鸭~ 🌸':pct<25?'开始啦，保持住哦~ 💪':pct<50?'不错不错，继续冲~ ✨':pct<75?'过半啦，你超棒的~ 💜':pct<100?'快完成啦，最后冲刺~ 🔥':'全部搞定！今天也是闪闪发光的一天~ 🎉✨';
+}
+function resetDay(){
+  if(!confirm('确定要重置今天的进度吗？🌸'))return;
+  Object.keys(tasks).forEach(id=>{tasks[id].elapsed=0;tasks[id].running=!1;tasks[id].startTime=null;tasks[id].completed=!1;
+    document.getElementById('fill-'+id).classList.remove('complete');document.getElementById('fill-'+id).style.width='0%';
+    document.getElementById('badge-'+id).classList.remove('show');const b=document.getElementById('btn-'+id);
+    b.textContent='⏱ 开始';b.classList.remove('running');b.disabled=!1;b.style.opacity='1';
+    document.querySelector('[data-task="'+id+'"]').classList.remove('celebrate');updateTaskUI(id);});
+  waterCount=0;renderWaterCups();document.getElementById('waterCount').textContent=waterCount;updateOverall();saveState();
+  document.getElementById('quoteDisplay').textContent=quotes[Math.floor(Math.random()*quotes.length)];
+}
 
-          if (currentElapsed >= task.target && !task.completed) {
-            task.elapsed = task.target;
-            task.completed = true;
-            task.running = false;
-            task.startTime = null;
-            document.getElementById(`fill-${taskId}`).classList.add('complete');
-            document.getElementById(`badge-${taskId}`).classList.add('show');
-            document.querySelector(`[data-task-id="${taskId}"]`).classList.add('celebrate');
-            createSparkles(taskId);
-            btn = document.getElementById(`btn-${taskId}`);
-            btn.textContent = '✅ 已完成';
-            btn.classList.remove('running');
-            btn.disabled = true;
-            btn.style.opacity = '0.6';
-            updateOverall();
-            saveState();
-          }
-        }
-      });
-    }
+// ==================== 存储 ====================
+function saveState(){
+  const state={date:new Date().toDateString(),tasks:{},waterCount};
+  Object.keys(tasks).forEach(id=>state.tasks[id]={elapsed:tasks[id].elapsed,completed:tasks[id].completed});
+  localStorage.setItem('allen-dashboard',JSON.stringify(state));
+}
+function loadState(){
+  const s=localStorage.getItem('allen-dashboard');if(!s)return;
+  try{const st=JSON.parse(s);if(st.date!==new Date().toDateString()){localStorage.removeItem('allen-dashboard');return}
+    Object.keys(tasks).forEach(id=>{if(st.tasks[id]){tasks[id].elapsed=st.tasks[id].elapsed||0;tasks[id].completed=st.tasks[id].completed||!1;
+      if(tasks[id].completed){document.getElementById('fill-'+id).classList.add('complete');document.getElementById('badge-'+id).classList.add('show');
+        const b=document.getElementById('btn-'+id);b.textContent='✅ 已完成';b.disabled=!0;b.style.opacity='0.6';}}});
+    waterCount=st.waterCount||0;renderWaterCups();document.getElementById('waterCount').textContent=waterCount;
+    Object.keys(tasks).forEach(id=>updateTaskUI(id));}catch(e){}
+}
 
-    // Create sparkle effect
-    function createSparkles(taskId) {
-      const card = document.querySelector(`[data-task-id="${taskId}"]`);
-      const emojis = ['✨', '🌟', '💫', '🎉', '💜'];
-      for (let i = 0; i < 6; i++) {
-        const sparkle = document.createElement('div');
-        sparkle.className = 'sparkle';
-        sparkle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        sparkle.style.left = Math.random() * 100 + '%';
-        sparkle.style.top = Math.random() * 100 + '%';
-        sparkle.style.fontSize = (16 + Math.random() * 12) + 'px';
-        sparkle.style.animationDelay = (i * 0.1) + 's';
-        card.appendChild(sparkle);
-        setTimeout(() => sparkle.remove(), 1200);
-      }
-    }
+// ==================== 日期 & 名言 ====================
+function updateDate(){
+  const d=new Date(),days=['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  const str=d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 '+days[d.getDay()];
+  document.getElementById('dateDisplay').textContent=str;
+  const nd=document.getElementById('newsDate');if(nd)nd.textContent=str;
+}
+function updateQuote(){document.getElementById('quoteDisplay').textContent=quotes[Math.floor(Math.random()*quotes.length)];}
 
-    // Water tracker
-    function renderWaterCups() {
-      const container = document.getElementById('waterCups');
-      container.innerHTML = '';
-      for (let i = 0; i < 10; i++) {
-        const cup = document.createElement('div');
-        cup.className = 'water-cup' + (i < waterCount ? ' filled' : '');
-        cup.innerHTML = `<span class="cup-emoji">🥛</span><div class="water"></div>`;
-        cup.onclick = () => toggleWater(i);
-        container.appendChild(cup);
-      }
-    }
+// ==================== 内容数据 ====================
+// --- 每日新闻 ---
+function buildNews(){
+  document.getElementById('newsContent').innerHTML=`
+<div class="card news-card">
+  <span class="news-tag economy">经济</span><span class="news-tag policy">宏观</span>
+  <div class="news-title">1. 央行货币政策最新动向：保持流动性合理充裕</div>
+  <div class="news-summary">央行近期通过逆回购等工具向市场注入流动性，7天期逆回购操作利率维持在1.5%不变。市场人士分析认为，当前货币政策基调以"稳"为主，短期内降准降息概率较低。</div>
+  <div class="news-meta">📅 2026年7月  ·  来源：央行公开市场操作公告</div>
+  <div class="analysis-box"><strong>📊 小爪解读：</strong> 央行当前的"稳健"姿态说明宏观流动性整体可控。对于咱们普通人来说，这也意味着短期内银行存款利率不会有太大变化，理财可以偏向中短期稳健型产品。</div>
+</div>
+<div class="card news-card">
+  <span class="news-tag economy">经济</span><span class="news-tag tech">科技</span>
+  <div class="news-title">2. AI 芯片需求持续增长，半导体行业景气度回升</div>
+  <div class="news-summary">全球AI大模型训练需求推动高端芯片订单持续增加，台积电、英伟达等企业产能满载。国内半导体自主化进程加速，华为昇腾、寒武纪等国产AI芯片厂商加速布局。</div>
+  <div class="news-meta">📅 2026年7月  ·  来源：行业观察</div>
+  <div class="analysis-box"><strong>📊 小爪解读：</strong> 你正在学AI方向，这是个重大利好信号。AI芯片的行业逻辑是"谁有算力谁有话语权"。建议你关注华为昇腾和寒武纪这两家公司的技术路线，了解一下国产AI芯片的生态，对你以后找工作有直接帮助。</div>
+</div>
+<div class="card news-card">
+  <span class="news-tag economy">投资</span>
+  <div class="news-title">3. A股市场结构性行情延续，AI概念板块活跃</div>
+  <div class="news-summary">近期A股三大指数震荡上行，北向资金净流入有所回暖。AI算力、数据要素、智能驾驶等概念板块轮动活跃，市场结构性机会明显。</div>
+  <div class="news-meta">📅 2026年7月  ·  来源：市场数据</div>
+  <div class="analysis-box"><strong>📊 小爪解读：</strong> 结构性行情意味着不是普涨，而是特定板块轮番表现。AI相关概念持续活跃，也侧面印证了你学AI方向的前景。不过投资需谨慎，这些仅供了解行业趋势。</div>
+</div>`;
+}
+buildNews();
 
-    function toggleWater(index) {
-      if (index < waterCount) {
-        // Click filled cup - empty from here
-        waterCount = index;
-      } else {
-        // Click empty cup - fill up to here
-        waterCount = index + 1;
-      }
-      renderWaterCups();
-      document.getElementById('waterCount').textContent = waterCount;
+// --- 英语学习 ---
+function buildEnglish(){
+  document.getElementById('englishContent').innerHTML=`
+<div class="card">
+  <div class="card-title"><span class="icon">📐</span> 今日长难句 — 考研/六级难度</div>
+  <div class="sentence-card">
+    <div class="eng-sentence">"The growing consensus among economists that the long-term benefits of investing in renewable energy far outweigh the short-term costs has prompted governments worldwide to reconsider their energy policies, albeit at varying speeds."</div>
+    <span class="eng-label grammar">语法分析</span>
+    <div class="eng-detail"><b>主干：</b>The growing consensus … has prompted governments … to reconsider …<br><b>同位语从句：</b>"that the long-term benefits … outweigh the short-term costs" 解释说明 consensus<br><b>让步状语：</b>"albeit at varying speeds" = although at varying speeds（各国速度不一）</div>
+  </div>
+  <div style="margin-top:10px">
+    <span class="eng-label vocab">词汇注释</span>
+    <div class="eng-detail"><b>consensus</b> /kənˈsensəs/ n. 共识  ·  <b>outweigh</b> /aʊtˈweɪ/ v. 超过、重于  ·  <b>prompt</b> /prɒmpt/ v. 促使  ·  <b>renewable</b> /rɪˈnjuːəbl/ adj. 可再生的  ·  <b>albeit</b> /ɔːlˈbiːɪt/ conj. 尽管、虽然</div>
+  </div>
+  <div style="margin-top:10px">
+    <span class="eng-label trans">参考翻译</span>
+    <div class="eng-detail">经济学家们日益达成的共识是：投资可再生能源的长期收益远远超过短期成本，这一共识促使全球各国政府重新考虑能源政策——尽管各国的推进速度不尽相同。</div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title"><span class="icon">🎬</span> 推荐学习视频</div>
+  <div class="video-grid">
+    <div class="video-card"><div class="video-thumb">🎓</div><div class="video-title">六级长难句拆解：三大从句一网打尽</div><div class="video-sub">小爪帮你筛选 · 待更新</div></div>
+    <div class="video-card"><div class="video-thumb">📖</div><div class="video-title">考研英语阅读：真题长难句精讲</div><div class="video-sub">小爪帮你筛选 · 待更新</div></div>
+    <div class="video-card"><div class="video-thumb">✍️</div><div class="video-title">英语写作黄金模板，考场直接用</div><div class="video-sub">小爪帮你筛选 · 待更新</div></div>
+  </div>
+</div>`;
+}
+buildEnglish();
 
-      if (waterCount === 10) {
-        const waterCard = document.querySelector('.water-cups').parentElement;
-        waterCard.classList.add('celebrate');
-        setTimeout(() => waterCard.classList.remove('celebrate'), 600);
-      }
+// --- AI 学习 ---
+function buildAI(){
+  document.getElementById('aiContent').innerHTML=`
+<div class="card">
+  <div class="card-title"><span class="icon">🗺️</span> AI 学习路线图</div>
+  <div class="sentence-card" style="line-height:2">
+    <b>第一阶段：Python 基础</b>（1-2个月）<br>
+    · NumPy / Pandas / Matplotlib — 数据处理三件套<br>
+    · 你正在学Python，优先搞定这三库<br><br>
+    <b>第二阶段：机器学习入门</b>（2-3个月）<br>
+    · Scikit-learn — 分类、回归、聚类<br>
+    · 吴恩达 Machine Learning 课程（B站有中文字幕版）<br>
+    · 关键概念：过拟合、交叉验证、特征工程<br><br>
+    <b>第三阶段：深度学习</b>（3-4个月）<br>
+    · PyTorch / TensorFlow 二选一（推荐PyTorch）<br>
+    · CNN（图像）、RNN/LSTM（序列）、Transformer（NLP）<br>
+    · 吴恩达 Deep Learning 专项课程<br><br>
+    <b>第四阶段：实战项目</b><br>
+    · 医学图像分析（结合你的医学信息工程专业！）<br>
+    · Kaggle 比赛入门<br>
+    · 搭建个人 AI 项目 Portfolio
+  </div>
+</div>
+<div class="card">
+  <div class="card-title"><span class="icon">🎬</span> 入门视频推荐</div>
+  <div class="video-grid">
+    <div class="video-card"><div class="video-thumb">🤖</div><div class="video-title">吴恩达 ML 入门（含中文字幕）</div><div class="video-sub">B站可搜 · 小爪定期更新链接</div></div>
+    <div class="video-card"><div class="video-thumb">💻</div><div class="video-title">PyTorch 60分钟入门实战</div><div class="video-sub">B站可搜 · 小爪定期更新链接</div></div>
+    <div class="video-card"><div class="video-thumb">🧠</div><div class="video-title">医学AI：图像识别在医疗中的应用</div><div class="video-sub">结合你专业 · 小爪推荐</div></div>
+  </div>
+</div>`;
+}
+buildAI();
 
-      updateOverall();
-      saveState();
-    }
+// --- 读书小屋 ---
+function buildBooks(){
+  document.getElementById('booksContent').innerHTML=`
+<div class="card">
+  <div class="card-title"><span class="icon">☯️</span> 《易经》</div>
+  <div class="english-detail" style="line-height:1.8">
+    <b>核心思想：</b>《易经》是中国最古老的哲学经典，核心概念是"变易、简易、不易"——万物恒变，规律至简，道法不变。<br>
+    <b>推荐读法：</b>先读《易传》（十翼），再读卦爻辞。精读乾卦、坤卦，理解"天行健，君子以自强不息；地势坤，君子以厚德载物"。<br>
+    <b>推荐版本：</b>南怀瑾《易经杂说》入门，再读《周易译注》（黄寿祺、张善文）。
+  </div>
+  <div class="video-grid" style="margin-top:10px">
+    <div class="video-card"><div class="video-thumb">☯️</div><div class="video-title">《易经》入门：10分钟看懂64卦</div><div class="video-sub">待更新</div></div>
+    <div class="video-card"><div class="video-thumb">📜</div><div class="video-title">南怀瑾讲易经：精华解读</div><div class="video-sub">待更新</div></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title"><span class="icon">⚔️</span> 《孙子兵法》</div>
+  <div class="english-detail" style="line-height:1.8">
+    <b>核心思想：</b>"兵者，诡道也。"孙子兵法不是教你打仗，是教你决策——知己知彼、避实击虚、先胜后战。<br>
+    <b>现代应用：</b>商战、面试、谈判、个人成长，几乎所有竞争场景都能套用。"不战而屈人之兵"是现代管理学的最高境界。<br>
+    <b>推荐读法：</b>逐篇精读，配合华杉讲透《孙子兵法》一起看，理解到位。
+  </div>
+  <div class="video-grid" style="margin-top:10px">
+    <div class="video-card"><div class="video-thumb">⚔️</div><div class="video-title">《孙子兵法》36计详解全集</div><div class="video-sub">待更新</div></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title"><span class="icon">🧠</span> 《天才在左 疯子在右》</div>
+  <div class="english-detail" style="line-height:1.8">
+    <b>书籍简介：</b>高铭通过访谈精神病人，呈现了"另一个世界"的思维模式。这些人能用物理、哲学、生物学知识构建逻辑自洽的异世界，让你分不清谁是天才谁是疯子。<br>
+    <b>物理学关联：</b>量子叠加态、多维空间、时间非线性的讨论贯穿全书，精神病人的视角有时比物理学家更前卫。<br>
+    <b>适合人群：</b>喜欢科幻、哲学、物理学的人。你会重新思考"正常"的定义。
+  </div>
+  <div class="video-grid" style="margin-top:10px">
+    <div class="video-card"><div class="video-thumb">🔬</div><div class="video-title">《天才在左疯子在右》深度解读</div><div class="video-sub">待更新</div></div>
+    <div class="video-card"><div class="video-thumb">🌌</div><div class="video-title">书中物理概念科普：量子力学入门</div><div class="video-sub">待更新</div></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title"><span class="icon">📈</span> 经济类入门推荐</div>
+  <div class="english-detail" style="line-height:1.8">
+    <b>入门必读：</b>《薛兆丰经济学讲义》— 零基础友好，案例丰富<br>
+    <b>进阶推荐：</b>《国富论》简读版 → 曼昆《经济学原理》— 经济学教材级入门<br>
+    <b>有趣好读：</b>《魔鬼经济学》— 用经济学视角看奇葩问题<br>
+    <b>中国视角：</b>林毅夫《解读中国经济》— 理解中国经济增长逻辑
+  </div>
+</div>`;
+}
+buildBooks();
 
-    // Overall progress
-    function updateOverall() {
-      // 4 items: 3 tasks + 1 water
-      let totalProgress = 0;
+// ==================== 复盘功能 ====================
+function saveReview(){
+  const d=document.getElementById('reviewDone').value.trim();
+  const b=document.getElementById('reviewBlock').value.trim();
+  const p=document.getElementById('reviewPlan').value.trim();
+  const m=document.getElementById('reviewMood').value;
+  if(!d&&!b&&!p){alert('至少写点什么吧~ 🌸');return;}
+  const now=new Date();
+  const ts=now.getFullYear()+'/'+(now.getMonth()+1)+'/'+now.getDate()+' '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  const entry={date:ts,mood:m,done:d,block:b,plan:p};
+  let reviews=JSON.parse(localStorage.getItem('allen-reviews')||'[]');
+  reviews.unshift(entry);
+  localStorage.setItem('allen-reviews',JSON.stringify(reviews));
+  document.getElementById('reviewDone').value='';
+  document.getElementById('reviewBlock').value='';
+  document.getElementById('reviewPlan').value='';
+  loadReviews();
+  alert('复盘保存成功！明天继续加油~ 🌸');
+}
+function loadReviews(){
+  let reviews=JSON.parse(localStorage.getItem('allen-reviews')||'[]');
+  const el=document.getElementById('reviewList');
+  if(!reviews.length){el.innerHTML='<p style="color:#B39DDB;font-size:0.85rem">还没有写过复盘呢，今天来写第一篇吧~</p>';return;}
+  el.innerHTML=reviews.map(r=>`
+    <div class="review-item">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span class="date">📅 ${r.date}</span>
+        <span class="mood">${r.mood}</span>
+      </div>
+      ${r.done?`<div style="margin-bottom:4px"><b>✅ 完成：</b>${r.done}</div>`:''}
+      ${r.block?`<div style="margin-bottom:4px"><b>🚧 问题：</b>${r.block}</div>`:''}
+      ${r.plan?`<div><b>📅 计划：</b>${r.plan}</div>`:''}
+    </div>
+  `).join('');
+}
+loadReviews();
 
-      Object.keys(tasks).forEach(taskId => {
-        totalProgress += Math.min(1, tasks[taskId].elapsed / tasks[taskId].target);
-      });
-
-      totalProgress += Math.min(1, waterCount / 10);
-
-      const pct = Math.round((totalProgress / 4) * 100);
-      document.getElementById('overallFill').style.width = pct + '%';
-      document.getElementById('overallPercent').textContent = pct + '%';
-      document.getElementById('overallMessage').textContent = getOverallMessage(pct);
-    }
-
-    // Save state
-    function saveState() {
-      const state = {
-        date: new Date().toDateString(),
-        tasks: {},
-        waterCount: waterCount,
-      };
-      Object.keys(tasks).forEach(taskId => {
-        const t = tasks[taskId];
-        state.tasks[taskId] = {
-          elapsed: t.elapsed,
-          running: false, // Don't persist running state
-          completed: t.completed,
-        };
-      });
-      localStorage.setItem('allen-dashboard', JSON.stringify(state));
-    }
-
-    // Load state
-    function loadState() {
-      const saved = localStorage.getItem('allen-dashboard');
-      if (!saved) return;
-
-      try {
-        const state = JSON.parse(saved);
-        // Check if same day
-        if (state.date !== new Date().toDateString()) {
-          // New day, reset
-          localStorage.removeItem('allen-dashboard');
-          return;
-        }
-
-        Object.keys(tasks).forEach(taskId => {
-          if (state.tasks[taskId]) {
-            tasks[taskId].elapsed = state.tasks[taskId].elapsed || 0;
-            tasks[taskId].completed = state.tasks[taskId].completed || false;
-            if (tasks[taskId].completed) {
-              document.getElementById(`fill-${taskId}`).classList.add('complete');
-              document.getElementById(`badge-${taskId}`).classList.add('show');
-              const btn = document.getElementById(`btn-${taskId}`);
-              btn.textContent = '✅ 已完成';
-              btn.disabled = true;
-              btn.style.opacity = '0.6';
-            }
-          }
-        });
-
-        waterCount = state.waterCount || 0;
-        renderWaterCups();
-        document.getElementById('waterCount').textContent = waterCount;
-
-        Object.keys(tasks).forEach(taskId => updateTaskUI(taskId));
-      } catch (e) {
-        console.error('Failed to load state:', e);
-      }
-    }
-
-    // Reset day
-    function resetDay() {
-      if (!confirm('确定要重置今天的进度吗？🌸')) return;
-
-      Object.keys(tasks).forEach(taskId => {
-        tasks[taskId].elapsed = 0;
-        tasks[taskId].running = false;
-        tasks[taskId].startTime = null;
-        tasks[taskId].completed = false;
-        document.getElementById(`fill-${taskId}`).classList.remove('complete');
-        document.getElementById(`fill-${taskId}`).style.width = '0%';
-        document.getElementById(`badge-${taskId}`).classList.remove('show');
-        const btn = document.getElementById(`btn-${taskId}`);
-        btn.textContent = '⏱ 开始';
-        btn.classList.remove('running');
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        document.querySelector(`[data-task-id="${taskId}"]`).classList.remove('celebrate');
-        updateTaskUI(taskId);
-      });
-
-      waterCount = 0;
-      renderWaterCups();
-      document.getElementById('waterCount').textContent = waterCount;
-      updateOverall();
-      saveState();
-      updateQuote();
-    }
-
-    // Init
-    updateDate();
-    updateQuote();
-    renderWaterCups();
-    loadState();
-    updateOverall();
-    timerInterval = setInterval(tick, 1000);
-  </script>
+// ==================== 初始化 ====================
+updateDate();updateQuote();renderWaterCups();loadState();updateOverall();
+timerInterval=setInterval(tick,1000);
+</script>
 </body>
 </html>
