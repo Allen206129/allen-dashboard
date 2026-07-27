@@ -1,0 +1,19 @@
+{
+  "name": "Allen 的工作台",
+  "short_name": "工作台",
+  "description": "Allen 的每日学习与健康追踪工作台",
+  "start_url": "/allen-dashboard/",
+  "scope": "/allen-dashboard/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F3E5F5",
+  "theme_color": "#D4B8E8",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
